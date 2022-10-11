@@ -1,0 +1,38 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using SunriseAuto.Areas.Identity.Data
+@using System.Security.Claims
+@using SunriseAuto.Models
+
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+
+@{
+    ViewData["Title"] = "Car list";
+}
+
+<h1>List of your favourite cars</h1>
+<form asp-area="Client" asp-controller="Fav" asp-action="List" class="d-flex">
+    <div class="col-xs-2">
+        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="SearchString">
+    </div>
+    <button class="btn btn-success" type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>          
+</form>
+<div class="row mt-2 mb-2">
+@foreach (var item in Model) {
+        <div class="col-lg-4">
+        <img class="img-thumbnail" src="@("~/image/"+item.ImageName)" asp-append-version="true" alt="@item.Name"/>
+        <h2>@item.Name</h2>
+        <p>Price: @item.Price $</p>
+        <p> 
+            <a asp-area="" asp-controller="Car" asp-action="Details" asp-route-id="@item.Id" class="btn btn-warning">See more</a>
+            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger">Not interested</a>
+        </p>
+    </div>
+}
+</div>
+@section Scripts{
+    @{
+       // await Html.RenderPartialAsync("_AuthScriptsPartial");
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -1,0 +1,80 @@
+﻿@model SunriseAuto.Models.VehicleViewModel
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h1>Create</h1>
+
+<h4>Car</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="AddOrEdit" autocomplete="off" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Car.Id" />
+            <input type="hidden" asp-for="Car.Date" />
+            <input type="hidden" asp-for="Car.ImageName" />
+            <div class="form-group">
+                <label asp-for="Car.Name" class="control-label"></label>
+                <input asp-for="Car.Name" class="form-control" />
+                <span asp-validation-for="Car.Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Car.ShortDesc" class="control-label"></label>
+                <input asp-for="Car.ShortDesc" class="form-control" />
+                <span asp-validation-for="Car.ShortDesc" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Car.LongDesc" class="control-label"></label>
+                <input asp-for="Car.LongDesc" class="form-control" />
+                <span asp-validation-for="Car.LongDesc" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Car.Mileage" class="control-label"></label>
+                <input asp-for="Car.Mileage" class="form-control" />
+                <span asp-validation-for="Car.Mileage" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Car.Price" class="control-label"></label>
+                <input asp-for="Car.Price" class="form-control" />
+                <span asp-validation-for="Car.Price" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Car.ImageFile" class="control-label"></label>
+                <input asp-for="Car.ImageFile" accept="image/*" />
+                <span asp-validation-for="Car.ImageFile" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Car.Status" class="control-label"></label>
+                <select asp-for="Car.Status" asp-items="Html.GetEnumSelectList<Status>()"></select>
+                <span asp-validation-for="Car.Status" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Car.TypeId" class="control-label"></label>
+                <select asp-for="Car.TypeId" 
+                        asp-items="@(new SelectList(Model.Types, nameof(SunriseAuto.Models.Type.Id), nameof(SunriseAuto.Models.Type.Name)))">
+                </select>
+                <span asp-validation-for="Car.TypeId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Car.BrandId" class="control-label"></label>
+                <select asp-for="Car.BrandId" 
+                        asp-items="@(new SelectList(Model.Brands, nameof(Brand.Id), nameof(Brand.Name)))">
+                </select>
+                <span asp-validation-for="Car.BrandId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

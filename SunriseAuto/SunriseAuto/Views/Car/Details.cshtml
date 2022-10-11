@@ -1,0 +1,84 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using SunriseAuto.Areas.Identity.Data
+@model SunriseAuto.Models.Car
+
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+
+@{
+    ViewData["Title"] = "Details";
+    var car = ViewData["Car"] as Car;
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Car</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+             @Html.DisplayNameFor(car => car.Name)
+        </dt>
+        <dd class = "col-sm-10">
+            @car.Name
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.ShortDesc)
+        </dt>
+        <dd class = "col-sm-10">
+            @car.ShortDesc
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.LongDesc)
+        </dt>
+        <dd class = "col-sm-10">
+            @car.LongDesc
+        </dd>
+        <dt class = "col-sm-2">
+            @car.ImageName
+        </dt>
+        <dd class = "col-sm-10">        
+            <img class="img-thumbnail" src="@("~/image/"+car.ImageName)" asp-append-version="true" alt="@car.Name"/>
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Mileage)
+        </dt>
+        <dd class = "col-sm-10">
+            @car.Mileage
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Price)
+        </dt>
+        <dd class = "col-sm-10">
+            @car.Price
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Status)
+        </dt>
+        <dd class = "col-sm-10">
+            @car.Status
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Date)
+        </dt>
+        <dd class = "col-sm-10">
+            @car.Date
+        </dd>
+    </dl>
+</div>
+<div>
+    @{
+        if (SignInManager.IsSignedIn(User) && !await UserManager.IsInRoleAsync(UserManager.GetUserAsync(User).Result,"admin") && car.Status.Equals(Status.Available))
+        {
+            <a asp-area="Client" asp-controller="Reservation" asp-action="Add" asp-route-CarId="@car.Id" class="btn btn-success">Add reservation</a>
+        }
+    } 
+    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+</div>
+
+
+@section Scripts{
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

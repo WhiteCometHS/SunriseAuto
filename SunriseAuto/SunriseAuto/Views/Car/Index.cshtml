@@ -1,0 +1,109 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using SunriseAuto.Areas.Identity.Data
+@using System.Security.Claims
+@model IEnumerable<SunriseAuto.Models.Car>
+
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+
+@{
+    ViewData["Title"] = "Car list";
+    IEnumerable<Car> cars = ViewData["Cars"] as IEnumerable<Car>;
+    IEnumerable<SunriseAuto.Models.Type> types = ViewData["Types"] as IEnumerable<SunriseAuto.Models.Type>;
+    IEnumerable<UserCar> spec = ViewData["UserCars"] as IEnumerable<UserCar>;
+}
+<link rel="stylesheet" href="~/css/horizontalScroll.css" asp-append-version="true" />
+<div class="container text-center my-3">
+    <h2 class="font-weight-light">Shop by type</h2>
+    <div class="row mx-auto my-auto justify-content-center">
+        <div id="recipeCarousel" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner" role="listbox">
+                @foreach (var item in types)
+                {
+                    if (types.First() == item)
+                    {
+                        <div class="carousel-item active">
+                            <div class="col-md-3">
+                                <div class="card mx-1">
+                                    <div class="card-img">
+                                        <img class="img-fluid" src="@("~/image/type-logo/"+item.ImageName)" asp-append-version="true" alt="@item.Name"/>
+                                    </div>
+                                    <a asp-action="Index" asp-route-typeId="@item.Id">
+                                        <div class="card-img-overlay">@Html.DisplayFor(modelItem => item.Name)</div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="carousel-item">
+                            <div class="col-md-3">
+                                <div class="card mx-1">
+                                    <div class="card-img">
+                                        <img class="img-fluid" src="@("~/image/type-logo/"+item.ImageName)" asp-append-version="true" alt="@item.Name"/>
+                                    </div>
+                                    <a asp-action="Index" asp-route-typeId="@item.Id">
+                                    <div class="card-img-overlay">@Html.DisplayFor(modelItem => item.Name)</div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    }                   
+                }
+            </div>
+            <a class="carousel-control-prev bg-transparent w-auto" href="#recipeCarousel" role="button" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            </a>
+            <a class="carousel-control-next bg-transparent w-auto" href="#recipeCarousel" role="button" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            </a>
+        </div>
+    </div>
+</div>
+
+
+
+
+<h1>Car list</h1>
+<form asp-controller="Car" asp-action="Index" asp-route-brandId="@ViewData["TypeId"]" class="d-flex">
+    <div class="col-xs-2">
+        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="SearchString">
+    </div>
+    <button class="btn btn-success" type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>          
+</form>
+<div class="row mt-2 mb-2">
+@foreach (var item in cars) {
+        bool temp = false;
+        <div class="col-lg-4">
+        <img class="img-thumbnail" src="@("~/image/"+item.ImageName)" asp-append-version="true" alt="@item.Name"/>
+        <h2>@Html.DisplayFor(modelItem => item.Name)</h2>
+        <p>Price: @Html.DisplayFor(modelItem => item.Price) $</p>
+        <p>
+            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-warning">See more</a>
+                @foreach (var i in spec)
+                {
+                    @if (i.UserId.Equals(User.FindFirstValue(ClaimTypes.NameIdentifier)) && i.CarId==item.Id)
+                    {
+                        <button type="button" class="btn btn-outline-success" disabled>Already in your favourite!</button>
+                        temp = true;
+                        break;
+                    }
+                }
+                @if(SignInManager.IsSignedIn(User) && !await UserManager.IsInRoleAsync(UserManager.GetUserAsync(User).Result,"admin") && temp==false)
+                {
+                    <a asp-area="Client" asp-controller="Fav" asp-action="Add" asp-route-id="@item.Id" class="btn btn-success ">Add to favourite</a>
+                }   
+        </p>
+    </div>
+}
+</div>
+
+<script src="~/js/horizontalScroll.js" type="text/javascript"></script>
+
+@section Scripts{
+    @{
+       // await Html.RenderPartialAsync("_AuthScriptsPartial");
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

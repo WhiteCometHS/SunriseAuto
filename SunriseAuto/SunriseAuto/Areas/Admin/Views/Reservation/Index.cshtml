@@ -1,0 +1,111 @@
+﻿@using SunriseAuto.Models
+@model IEnumerable<SunriseAuto.Models.Reservation>
+
+@{
+    ViewData["Title"] = "Index";
+    IEnumerable<Car> cars = ViewData["Cars"] as IEnumerable<Car>;
+}
+
+<h1>List of clients reservations</h1>
+
+<p>
+    <a asp-area="" asp-controller="Car" asp-action="Index">Browse car list</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Id)
+            </th>
+            <th>
+                Brand & model
+            </th>
+            <th>
+                Picture
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Duration)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Date)
+            </th>
+            <th>
+                Price
+            </th>
+            <th>
+                Status
+            </th>
+            <th>
+                Manage status
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+
+@for(int i=0;i<Model.Count();i++) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => Model.ElementAt(i).Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => cars.ElementAt(i).Name)
+            </td>
+            <td>
+                <img src="@("~/image/"+cars.ElementAt(i).ImageName)" asp-append-version="true" height="60px" width="120px" style="object-fit: cover;"/>
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => Model.ElementAt(i).Duration)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => Model.ElementAt(i).Date)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => cars.ElementAt(i).Price)
+            </td>
+            <td>
+                    @switch (cars.ElementAt(i).Status)
+                    {
+                        case Status.NotAccepted:
+                            <div class="alert alert-warning" role="alert">@Html.DisplayFor(modelItem => cars.ElementAt(i).Status)</div>
+                            break;
+                        case Status.Ordered:
+                            <div class="alert alert-primary" role="alert">@Html.DisplayFor(modelItem => cars.ElementAt(i).Status)</div>
+                            break;
+                        case Status.Ready:
+                            <div class="alert alert-success" role="alert">@Html.DisplayFor(modelItem => cars.ElementAt(i).Status)</div>
+                            break;
+                        case Status.InUse:
+                            <div class="alert alert-secondary" role="alert">@Html.DisplayFor(modelItem => cars.ElementAt(i).Status)</div>
+                            break;
+                        default:
+                            <div class="alert alert-light" role="alert">@Html.DisplayFor(modelItem => cars.ElementAt(i).Status)</div>
+                            break;
+                    } 
+            </td>
+            <td>
+                @switch (cars.ElementAt(i).Status)
+                    {
+                        case Status.NotAccepted:
+                            <div class="btn-group" role="group">
+                                <a asp-action="SetOrdered" asp-route-id="@cars.ElementAt(i).Id" type="button" class="btn btn-outline-info">Ordered</a>
+                                <a asp-action="SetReady" asp-route-id="@cars.ElementAt(i).Id" type="button" class="btn btn-outline-info">Ready</a>
+                            </div>
+                            
+                            break;
+                        case Status.Ordered:
+                            <a asp-action="SetReady" asp-route-id="@cars.ElementAt(i).Id" type="button" class="btn btn-outline-info">Ready</a>
+                            break;
+                        case Status.Ready:
+                            <a asp-action="SetInUse" asp-route-id="@cars.ElementAt(i).Id" type="button" class="btn btn-outline-info">InUse</a>
+                            break;
+                    } 
+            </td>
+            <td>
+                <a asp-area="Client" asp-controller="Reservation" asp-action="Details" asp-route-id="@Model.ElementAt(i).Id">Details</a> 
+                <a asp-action="Delete" asp-route-id="@Model.ElementAt(i).Id">Cancel reservation</a> 
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

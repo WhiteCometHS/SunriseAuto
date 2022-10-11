@@ -1,0 +1,127 @@
+﻿@model PaginatedList<SunriseAuto.Models.Car>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h1>Vehicle List</h1>
+<form asp-controller="Vehicle" asp-action="Index" class="d-flex">
+    <div class="col-xs-2">
+        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="SearchString" value="@ViewData["CurrentFilter"]">
+    </div>
+    <button class="btn btn-outline-success" type="submit"><i class="fa-solid fa-magnifying-glass"></i></button> 
+    <a asp-action="Index">Back to Full List</a>
+</form>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Name</a>
+            </th>
+            <th>
+                Mileage
+            </th>
+            <th>
+                Image
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["PriceSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Price</a>
+            </th>
+            <th>
+                Status
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["DateSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Date</a>
+            </th>
+            <th>
+                <a asp-action="AddOrEdit" class="btn btn-success"><i class="fa-solid fa-plus"></i> New Vehicle</a>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Mileage)
+            </td>
+            <td>
+                <img src="@("~/image/"+item.ImageName)" asp-append-version="true" height="50px" width="100px" style="object-fit: cover;"/>
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Price)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Status)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Date)
+            </td>
+            <td>
+                <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+                <div class="btn-group mr-2" role="group">
+                    <a asp-area="" asp-controller="Car" asp-action="Details" asp-route-id="@item.Id" class="btn btn-success">
+                        <i class="fa-solid fa-eye"></i>
+                    </a>
+                    <a asp-action="AddOrEdit" asp-route-id="@item.Id" class="btn btn-warning" style="color:white;">
+                        <i class="fa-solid fa-pen-to-square"></i>
+                    </a>
+                    
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </a>
+                </div>
+                </div>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+    if (prevDisabled.Equals("disabled"))
+    {
+        <a asp-action="Index"
+           asp-route-sortOrder="@ViewData["CurrentSort"]"
+           asp-route-pageNumber="@(Model.PageIndex - 1)"
+           asp-route-currentFilter="@ViewData["CurrentFilter"]"
+           class="btn btn-secondary @prevDisabled">
+            Previous
+        </a>
+    }
+    else
+    {
+        <a asp-action="Index"
+           asp-route-sortOrder="@ViewData["CurrentSort"]"
+           asp-route-pageNumber="@(Model.PageIndex - 1)"
+           asp-route-currentFilter="@ViewData["CurrentFilter"]"
+           class="btn btn-primary @prevDisabled">
+            Previous
+        </a>
+    }
+    if (nextDisabled.Equals("disabled"))
+    {
+        <a asp-action="Index"
+           asp-route-sortOrder="@ViewData["CurrentSort"]"
+           asp-route-pageNumber="@(Model.PageIndex + 1)"
+           asp-route-currentFilter="@ViewData["CurrentFilter"]"
+           class="btn btn-secondary @nextDisabled">
+            Next
+        </a>
+    }
+    else
+    {
+        <a asp-action="Index"
+           asp-route-sortOrder="@ViewData["CurrentSort"]"
+           asp-route-pageNumber="@(Model.PageIndex + 1)"
+           asp-route-currentFilter="@ViewData["CurrentFilter"]"
+           class="btn btn-primary @nextDisabled">
+            Next
+        </a>
+    }
+}
+

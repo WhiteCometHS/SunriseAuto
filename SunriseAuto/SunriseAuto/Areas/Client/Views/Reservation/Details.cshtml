@@ -1,0 +1,103 @@
+﻿@using SunriseAuto.Models
+@model SunriseAuto.Models.Reservation
+@inject UserManager<User> UserManager
+
+@{
+    ViewData["Title"] = "Details";
+    Car car = ViewData["Car"] as Car;
+    string brand = ViewData["Brand"] as string;
+    User user = ViewData["User"] as User;
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Reservation</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-3">
+            Your reservation id
+        </dt>
+        <dd class = "col-sm-9">
+            @Html.DisplayFor(model => model.Id)
+        </dd>
+        <dt class = "col-sm-3">
+            Brand
+        </dt>
+        <dd class = "col-sm-9">
+            @brand
+        </dd>
+        <dt class = "col-sm-3">
+            Model
+        </dt>
+        <dd class = "col-sm-9">
+            @car.Name
+        </dd>
+        <dt class = "col-sm-3">
+            Picture
+        </dt>
+        <dd class = "col-sm-9">        
+            <img class="img-thumbnail" src="@("~/image/"+car.ImageName)" asp-append-version="true" alt="@car.Name"/>
+        </dd>
+        <dt class = "col-sm-3">
+            Description
+        </dt>
+        <dd class = "col-sm-9">
+            @car.LongDesc
+        </dd>
+        <dt class = "col-sm-3">
+            Price
+        </dt>
+        <dd class = "col-sm-9">
+            @car.Price
+        </dd>
+        <dt class = "col-sm-3">
+            @Html.DisplayNameFor(model => model.Duration)
+        </dt>
+        <dd class = "col-sm-9">
+            @Html.DisplayFor(model => model.Duration)
+        </dd>
+        <dt class = "col-sm-3">
+            @Html.DisplayNameFor(model => model.Date)
+        </dt>
+        <dd class = "col-sm-9">
+            @Html.DisplayFor(model => model.Date)
+        </dd>
+        <dt class = "col-sm-3">
+            @Html.DisplayNameFor(model => model.CarId)
+        </dt>
+        <dd class = "col-sm-9">
+            @Html.DisplayFor(model => model.CarId)
+        </dd>
+        <dt class = "col-sm-3">
+            Name/Surname
+        </dt>
+        <dd class = "col-sm-9">
+            @user.FirstName @user.LastName
+        </dd>
+        <dt class = "col-sm-3">
+            Email
+        </dt>
+        <dd class = "col-sm-9">
+            @user.Email
+        </dd>
+        <dt class = "col-sm-3">
+            Phone number
+        </dt>
+        <dd class = "col-sm-9">
+            @await UserManager.GetPhoneNumberAsync(user);
+        </dd>
+        
+    </dl>
+</div>
+<div>
+    @if(await UserManager.IsInRoleAsync(UserManager.GetUserAsync(User).Result, "admin"))
+    {
+        <a asp-area="Admin" asp-controller="Reservation" asp-action="Index">Back to List</a>
+    }
+    else
+    {
+        <a asp-action="Index">Back to List</a>
+    }
+
+</div>

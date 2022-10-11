@@ -1,0 +1,58 @@
+﻿@model IEnumerable<SunriseAuto.Models.Car>
+
+@{
+    ViewData["Title"] = "Car list";
+    IEnumerable<Car> cars = ViewData["Cars"] as IEnumerable<Car>;
+    IEnumerable<Brand> brands = ViewData["Brands"] as IEnumerable<Brand>;
+}
+<link rel="stylesheet" href="~/css/horizontalScroll.css" asp-append-version="true" />
+
+
+<div class="row row-cols-1 row-cols-md-6 g-4">
+    @foreach (var item in brands)
+    {
+      <div class="col">
+        <div class="card">
+          <img class="card-img-top" src="@("~/image/brand-logo/"+item.ImageName)" asp-append-version="true" alt="@item.Name"/>
+                  <a asp-action="Brands" asp-route-brandId="@item.Id">
+            <div class="card-img-overlay"></div>
+        </a>
+          <div class="card-body">
+            <h5 class="card-title text-center">@item.Name</h5>
+          </div>
+        </div>
+
+      </div>
+    }
+</div>
+
+
+<h1>Car list</h1>
+
+<form asp-controller="Car" asp-action="Brands" asp-route-brandId="@ViewData["BrandId"]" class="d-flex">
+    <div class="col-xs-2">
+        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="SearchString">
+    </div>
+    <button class="btn btn-success" type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>          
+</form>
+<div class="row mt-2 mb-2">
+@foreach (var item in cars) {
+    <div class="col-lg-4">
+        <img class="img-thumbnail" src="@("~/image/"+item.ImageName)" asp-append-version="true" alt="@item.Name"/>
+        <h2>@Html.DisplayFor(modelItem => item.Name)</h2>
+        <p>Price: @Html.DisplayFor(modelItem => item.Price) $</p>
+        <p>
+            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-warning">See more</a>
+        </p>   
+    </div>
+}
+</div>
+
+<script src="~/js/horizontalScroll.js" type="text/javascript"></script>
+
+@section Scripts{
+    @{
+       // await Html.RenderPartialAsync("_AuthScriptsPartial");
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
